@@ -46,3 +46,6 @@ dx download *markdup.bam
     expect "sftp>"   
     send -- "exit\r"
 EOF
+
+# Exit the bash script
+exit 0
