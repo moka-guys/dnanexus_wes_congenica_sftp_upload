@@ -47,5 +47,3 @@ dx download *markdup.bam
     send -- "exit\r"
 EOF
 
-# Exit the bash script
-exit 0
