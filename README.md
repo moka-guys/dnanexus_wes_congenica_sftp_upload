@@ -2,7 +2,7 @@
 
 A bash script has been created to semi automate the WES sample SFTP upload process, whilst the app is being developed
 To use the bash script:
-1) dx select the WES run you wish to upload
+1) dx select DNA Nexus project containing the WES run you wish to upload. Ensure you are in the root of the project
 2) The bash script can be found in 001_ToolsReferenceData/Apps/WES_Congenica_SFTP_upload_V0.1.sh
 3) Invoke a cloud workstation, passing the path of the WES_Congenic_SFTP_upload.sh to the -ifids to pull the bash script into the workstation
 4) Run the bash script 
