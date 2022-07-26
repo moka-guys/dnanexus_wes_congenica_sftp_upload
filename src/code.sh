@@ -1,3 +1,4 @@
+
 #!/usr/bin/bash -d
 
 # Output each line as it is executed (-x) and don't stop if any non zero exit codes are seen (+e)
@@ -59,7 +60,7 @@ SFTP_pass=$(dx cat project-FQqXfYQ0Z0gqx7XG9Z2b4K43:congenica_SFTP_upload)
 # set timeout -1 means the expect script will not time out 
 # Spawn runs a command
 # use sshpass to pass -p (password for sftp)
-# It waits to see expected return in the temrinal 
+# It waits to see expected return in the terminal 
 # Then sends the response 
 /usr/bin/expect << EOF
     set timeout -1
@@ -80,7 +81,7 @@ then
     # We can use this to determine if the file was uploaded or not
     curl -k "sftp://eu-sftp.congenica.com/$bam_name" --user "GSTT:$SFTP_pass" --head 
     bam_upload_status=$?
-    if [ $bam_upload_status == 0 ] # Retun of the above command is successfull 
+    if [ $bam_upload_status == 0 ] # Return of the above command is successful 
     then 
         # Echo & log the outcome
         echo "BAM: $bam_name successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$bam_name.txt 
@@ -93,7 +94,7 @@ if [[ ! -z $vcf ]] # If a VCF was input
 then 
     curl -k "sftp://eu-sftp.congenica.com/$vcf_name" --user "GSTT:$SFTP_pass" --head
     vcf_upload_status=$?
-    if [ $vcf_upload_status == 0 ] # Retun of the above command is successfull  
+    if [ $vcf_upload_status == 0 ] # Return of the above command is successful  
     then 
         echo "VCF: $vcf_name successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$vcf_name.txt
     else
@@ -124,11 +125,11 @@ then
     echo "BAM & VCF inputs given"
     if [ "$bam_upload_status" -eq "0" ] && [ "$vcf_upload_status" -eq "0" ] # If both successfully uploaded
     then 
-        echo "BAM & VCF successfuly uploaded"
+        echo "BAM & VCF successfully uploaded"
         exit 0
         mark-success
     else
-        echo "Upload unsuccessfull"
+        echo "Upload unsuccessful"
         exit 1
     fi
 elif [[ ! -z $bam ]] &&  [[ -z $vcf ]] # If only a BAM was inputted 
@@ -136,11 +137,11 @@ then
     echo "BAM only given as input"
     if [ "$bam_upload_status" -eq "0" ] 
     then
-        echo "BAM successfuly uploaded"
+        echo "BAM successfully uploaded"
         exit 0
         mark-success
     else
-        echo "BAM upload unsuccessfull"
+        echo "BAM upload unsuccessful"
         exit 1
     fi
 elif [[ -z $bam ]] &&  [[ ! -z $vcf ]]
@@ -152,10 +153,11 @@ then
         exit 0
         mark-success
     else 
-        echo "VCF upload unsuccessfull"
+        echo "VCF upload unsuccessful"
         exit 1
     fi
 fi
+
 
 
 
