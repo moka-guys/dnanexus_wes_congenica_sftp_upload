@@ -1,0 +1,58 @@
+{
+  "name": "wes_congenica_sftp_upload_v0.1",
+  "title": "wes_congenica_sftp_upload_v0.1",
+  "summary": "v0.1  Upload WES VCF & BAMS to Congenica via SFTP",
+  "tags": [
+    "Upload"
+  ],
+  "properties": {
+    "github release": "v0.1"
+  },
+  "dxapi": "1.0.0",
+  "inputSpec": [
+    {
+      "name": "bam",
+      "label": "BAM file",
+      "help": "BAM file to be uploaded",
+      "class": "file",
+      "patterns": ["*markdup.bam"],
+      "optional": true
+    },
+    {
+      "name": "vcf",
+      "label": "VCF file",
+      "help": "VCF file to be uploaded",
+      "class": "file",
+      "patterns": ["*markdup_Haplotyper.vcf.gz"],
+      "optional": true
+
+    }
+  ],
+  "outputSpec": [],
+  "runSpec": {
+    "execDepends": [
+    ],
+    "distribution" : "Ubuntu",
+    "release":"20.04",
+    "version": "0",
+    "file": "src/code.sh",
+    "interpreter": "bash",
+    "assetDepends": [
+    ]
+  },
+  "access": {
+    "allProjects":"UPLOAD",
+    "network": [
+      "*"
+    ]
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "main": {
+          "instanceType": "mem1_ssd1_x2"
+        }
+      }
+    }
+  }
+}
