@@ -1,4 +1,4 @@
- # dnanexus_wes_congenica_sftp_upload v0.1
+ # dnanexus_wes_congenica_sftp_upload v1.0
 
 ## What does this app do?
 
