@@ -20,6 +20,6 @@ This app will need to be run in WES runs with applicable samples, a more automat
 
 ## What does this app output?
 
-A log file which records if the samples selected were uploaded successfully to the SFTP
+A log file which records if the samples selected were uploaded successfully to the SFTP will be uploaded to a folder called congenica_logs in the DNANexus runfolder
 
 ## This app was made by Viapath Genome Informatics
