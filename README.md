@@ -8,11 +8,11 @@ Both inputs are optional
 
 ## What are typical use cases for this app?
 
-After quality checks of a WES run have been completed, this app will be run to upload the samples to Congenica on a sample by sample basis
+After quality checks of a WES run have been completed, this app will be run to upload revelvant samples to Congenica on a sample by sample basis
 
 ## What data are required for this app to run?
 
- VCFs (*markdup_Haplotyper.vcf.gz*)  &/or BAMs( *markdup.bam*) from WES run
+ VCFs (*markdup_Haplotyper.vcf.gz*)  &/or BAMs( *markdup.bam*) 
 
 ## How does this app work?
 
@@ -20,7 +20,6 @@ This app will need to be run in WES runs with applicable samples, a more automat
 
 ## What does this app output?
 
-A log file with records if the samples selected were uploaded successfully 
-
+A log file which records if the samples selected were uploaded successfully to the SFTP
 
 ## This app was made by Viapath Genome Informatics
