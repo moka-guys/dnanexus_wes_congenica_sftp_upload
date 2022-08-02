@@ -62,8 +62,8 @@ then
     # Check if it was uploaded
     bam_output=$(sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "ls $bam_name | tail -n1 ")
     # If the sample name is listed twice in the above output, it's been uploaded 
-    bam_string_count=$(grep -o "NGS*" <<<$bam_output | wc -l)
-    if [ $bam_string_count -eq 2 ]
+    bam_string_count=$(grep -o "NGS*" <<<"$bam_output" | wc -l)
+    if [ "$bam_string_count" -eq 2 ]
     then 
         # Echo & log the outcome
         echo "BAM: "$bam_name" successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$bam_name.txt 
@@ -78,9 +78,10 @@ then
     sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "put /home/dnanexus/downloads/*vcf.gz"
     # Check if it was uploaded
     vcf_output=$(sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "ls $vcf_name | tail -n1 ")
+ 
     # If the sample name is listed twice, it's been uploaded 
-    vcf_string_count=$(grep -o "NGS*" <<<$vcf_output | wc -l)
-    if [ $vcf_string_count -eq 2 ]
+    vcf_string_count=$(grep -o "NGS*" <<<"$vcf_output" | wc -l)
+    if [ "$vcf_string_count" -eq 2 ]
     then 
         echo "VCF: "$vcf_name" successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$vcf_name.txt
     else
@@ -109,25 +110,25 @@ dx upload --brief --path "$DX_PROJECT_CONTEXT_ID:/congenica_logs/" ~/out/congeni
 if [[ -n $bam ]] && [[ -n $vcf ]] # If BAM & VCF given as inputs
 then
     echo "BAM & VCF inputs given"
-    if [ $bam_string_count -eq 2 ] && [ $vcf_string_count -eq 2 ] # If both successfully uploaded
+    if [ "$bam_string_count" -eq 2 ] && [ "$vcf_string_count" -eq 2 ] # If both successfully uploaded
     then 
-        echo "BAM & VCF successfuly uploaded"
+        echo "BAM & VCF successfully uploaded"
         exit 0
         mark-success
     else
-        echo "Upload unsuccessfull"
+        echo "Upload unsuccessful"
         exit 1
     fi
 elif [[ -n $bam ]] &&  [[ -z $vcf ]] # If only a BAM was inputted 
 then 
     echo "BAM only given as input"
-    if [ $bam_string_count -eq 2 ] 
+    if [ "$bam_string_count" -eq 2 ] 
     then
-        echo "BAM successfuly uploaded"
+        echo "BAM successfully uploaded"
         exit 0
         mark-success
     else
-        echo "BAM upload unsuccessfull"
+        echo "BAM upload unsuccessful"
         exit 1
     fi
 elif [[ -z $bam ]] &&  [[ -n $vcf ]]
@@ -139,7 +140,7 @@ then
         exit 0
         mark-success
     else 
-        echo "VCF upload unsuccessfull"
+        echo "VCF upload unsuccessful"
         exit 1
     fi
 fi
