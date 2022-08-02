@@ -1,38 +1,25 @@
- # dnanexus_WES_Cognenica_SFTP_upload v0.1
-
-A bash script has been created to semi automate the WES sample SFTP upload process, whilst the app is being developed
-To use the bash script:
-1) dx select DNA Nexus project containing the WES run you wish to upload. Ensure you are in the root of the project
-2) The bash script can be found in 001_ToolsReferenceData/Apps/WES_Congenica_SFTP_upload_V0.1.sh
-3) Invoke a cloud workstation, passing the path of the WES_Congenic_SFTP_upload.sh to the -ifids to pull the bash script into the workstation
-4) Run the bash script 
-5) Terminate the cloud workstation when the bash script has finished 
-
-The bash script:
-1) Downloads required packages 
-2) Uses ssh-keyscan gathers the SSH host key of the Congenica SFTP
-3) Downloads required keys and files (*markdup_Haplotyper.vcf.gz & *markdup.bam)
-4) Uses the expect package to run the sshpass command to connect to the SFTP
-5) Then transfers the BAMs and VCFs and exits the SFTP
-
-
+ # dnanexus_wes_congenica_sftp_upload v1.0
 
 ## What does this app do?
 
-This app will upload VCFs (*markdup_Haplotyper.vcf.gz*)  & BAMs (*markdup.bam*) from WES runs to the Congenica SFTP to be inputted into Congenica 
+This app uploads VCFs (*markdup_Haplotyper.vcf.gz*)  & BAMs (*markdup.bam*) from WES runs to the Congenica SFTP to be inputted into Congenica 
+
+Both inputs are optional
 
 ## What are typical use cases for this app?
 
-After quality checks of a WES run have been completed, this app will be run to upload the samples to Congenica 
+After quality checks of a WES run have been completed, this app will be run to upload relevant samples to Congenica on a sample by sample basis
 
-## What data are required for this app to run?
+## What data is required for this app to run?
 
-VCFs (*markdup_Haplotyper.vcf.gz*)  & BAMs( *markdup.bam*) from WES run
+ VCFs (*markdup_Haplotyper.vcf.gz*)  &/or BAMs( *markdup.bam*) 
 
 ## How does this app work?
 
-This app will be run by sshing on to the workstation and running a bash script of dx run commands (still to be created)
+This app will need to be run in WES runs with applicable samples, a more automated process is being developed
 
+## What does this app output?
 
+A log file which records if the samples selected were uploaded successfully to the SFTP will be uploaded to a folder called congenica_logs in the DNANexus runfolder
 
-## This app was made by Viapath Genome Informatics
+## This app was made by Viapath Genome Informatic
