@@ -2,9 +2,9 @@
 
 ## What does this app do?
 
-This app uploads VCFs (*markdup_Haplotyper.vcf.gz*)  & BAMs (*markdup.bam*) from WES runs to the Congenica SFTP to be inputted into Congenica 
+This app upload can upload a VCF (*markdup_Haplotyper.vcf.gz*) and/or a BAM (*markdup.bam*) from WES runs to the Congenica SFTP to be inputted into Congenica 
 
-Both inputs are optional
+Both inputs are optional but if no inputs are given, the app will fail
 
 ## What are typical use cases for this app?
 
@@ -12,7 +12,7 @@ After quality checks of a WES run have been completed, this app will be run to u
 
 ## What data is required for this app to run?
 
- VCFs (*markdup_Haplotyper.vcf.gz*)  &/or BAMs( *markdup.bam*) 
+ A VCF (*markdup_Haplotyper.vcf.gz*) and/or a BAM( *markdup.bam*) 
 
 ## How does this app work?
 
