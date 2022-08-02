@@ -61,7 +61,11 @@ then
     sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "put /home/dnanexus/downloads/*.bam"
     # Check if it was uploaded
     bam_output=$(sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "ls $bam_name | tail -n1 ")
-    # If the sample name is listed twice in the above output, it's been uploaded 
+    # If the sample has been uploaded, the string contained in bam_output will look like:
+    # "sftp> ls NGSXXX_XX_markdup_Haplotyper.bam | tail -n1 ls NGSXXX_XX_markdup_Haplotyper.bam"
+    # if the sample hasn't been uploaded, the string will look like:
+    # "sftp> ls NGSXXX_XX_markdup_Haplotyper.bam | tail -n1"
+    # If we count two NGS in bam_output, it's succesfully uploaded
     bam_string_count=$(grep -o "NGS*" <<<"$bam_output" | wc -l)
     if [ "$bam_string_count" -eq 2 ]
     then 
@@ -78,8 +82,11 @@ then
     sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "put /home/dnanexus/downloads/*vcf.gz"
     # Check if it was uploaded
     vcf_output=$(sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "ls $vcf_name | tail -n1 ")
- 
-    # If the sample name is listed twice, it's been uploaded 
+    # If the sample has been uploaded, the string contained in bam_output will look like:
+    # "sftp> ls NGSXXX_XX_markdup_Haplotyper.vcf.gz | tail -n1 ls NGSXXX_XX_markdup_Haplotyper.vcf.gz"
+    # if the sample hasn't been uploaded, the string will look like:
+    # "sftp> ls NGSXXX_XX_markdup_Haplotyper.vcf.gz | tail -n1"
+    # If we count two NGS in bam_output, it's succesfully uploaded
     vcf_string_count=$(grep -o "NGS*" <<<"$vcf_output" | wc -l)
     if [ "$vcf_string_count" -eq 2 ]
     then 
