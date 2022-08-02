@@ -1,4 +1,3 @@
-
 #!/usr/bin/bash -d
 
 # Output each line as it is executed (-x) and don't stop if any non zero exit codes are seen (+e)
@@ -11,7 +10,7 @@ set -x +e
 if [[ -z $bam ]] && [[ -z $vcf ]] # If both BAM & VCF inputs are empty, close the app 
 then
     echo "No inputs given, stopping app" 
-    exit 0
+    exit 1
 fi  
 
 #####################################################################
@@ -23,12 +22,12 @@ dx-download-all-inputs --parallel
 
 mkdir downloads 
 
-if [[ ! -z $bam ]] # If a BAM has been given as input, move it
+if [[ -n $bam ]] # If a BAM has been given as input, move it
 then 
     mv /home/dnanexus/in/bam/* /home/dnanexus/downloads/
 fi
 
-if [[ ! -z $vcf ]]
+if [[ -n $vcf ]]
 then
     mv /home/dnanexus/in/vcf/* /home/dnanexus/downloads/
 fi
@@ -53,52 +52,39 @@ ssh-keyscan eu-sftp.congenica.com >> /root/.ssh/known_hosts
 SFTP_pass=$(dx cat project-FQqXfYQ0Z0gqx7XG9Z2b4K43:congenica_SFTP_upload)
 
 #####################################################################
-# Run expect to put input into SFTP
+# Put samples into SFTP using sshpass 
 #####################################################################
 
-# Expect allows interaction with the SFTP terminal 
-# set timeout -1 means the expect script will not time out 
-# Spawn runs a command
-# use sshpass to pass -p (password for sftp)
-# It waits to see expected return in the terminal 
-# Then sends the response 
-/usr/bin/expect << EOF
-    set timeout -1
-    spawn sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com
-    expect "sftp>"
-    send -- "put /home/dnanexus/downloads/*markdup*\r"
-    expect "sftp>"   
-    send -- "exit\r"
-EOF
-
-#####################################################################
-# Check if samples uploaded & log outcomes
-#####################################################################
-
-if [[ ! -z $bam ]] # If a BAM was input
+if [[ -n $bam ]] # If a BAM was input
 then 
-    # curl will attempt to get the head of the file in the SFTP
-    # We can use this to determine if the file was uploaded or not
-    curl -k "sftp://eu-sftp.congenica.com/$bam_name" --user "GSTT:$SFTP_pass" --head 
-    bam_upload_status=$?
-    if [ $bam_upload_status == 0 ] # Return of the above command is successful 
+    # Put the BAM in via sshpass
+    sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "put /home/dnanexus/downloads/*.bam"
+    # Check if it was uploaded
+    bam_output=$(sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "ls $bam_name | tail -n1 ")
+    # If the sample name is listed twice in the above output, it's been uploaded 
+    bam_string_count=$(grep -o "NGS*" <<<$bam_output | wc -l)
+    if [ $bam_string_count -eq 2 ]
     then 
         # Echo & log the outcome
-        echo "BAM: $bam_name successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$bam_name.txt 
+        echo "BAM: "$bam_name" successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$bam_name.txt 
     else
-        echo "BAM: $bam_name not uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$bam_name.txt
+        echo "BAM: "$bam_name" not uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$bam_name.txt
     fi
 fi
 
-if [[ ! -z $vcf ]] # If a VCF was input
+if [[ -n $vcf ]] # If a VCF was input
 then 
-    curl -k "sftp://eu-sftp.congenica.com/$vcf_name" --user "GSTT:$SFTP_pass" --head
-    vcf_upload_status=$?
-    if [ $vcf_upload_status == 0 ] # Return of the above command is successful  
+    # Put the VCF in via sshpass
+    sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "put /home/dnanexus/downloads/*vcf.gz"
+    # Check if it was uploaded
+    vcf_output=$(sshpass -p $SFTP_pass sftp GSTT@eu-sftp.congenica.com <<< "ls $vcf_name | tail -n1 ")
+    # If the sample name is listed twice, it's been uploaded 
+    vcf_string_count=$(grep -o "NGS*" <<<$vcf_output | wc -l)
+    if [ $vcf_string_count -eq 2 ]
     then 
-        echo "VCF: $vcf_name successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$vcf_name.txt
+        echo "VCF: "$vcf_name" successfully uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$vcf_name.txt
     else
-        echo "VCF: $vcf_name not uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$vcf_name.txt
+        echo "VCF: "$vcf_name" not uploaded to SFTP" >> ~/$path_to_logs/congenica_logs_$vcf_name.txt
     fi
 fi
 
@@ -120,44 +106,43 @@ dx upload --brief --path "$DX_PROJECT_CONTEXT_ID:/congenica_logs/" ~/out/congeni
 # Determine if app should fail or succeed 
 #####################################################################
 
-if [[ ! -z $bam ]] && [[ ! -z $vcf ]] # If BAM & VCF given as inputs
+if [[ -n $bam ]] && [[ -n $vcf ]] # If BAM & VCF given as inputs
 then
     echo "BAM & VCF inputs given"
-    if [ "$bam_upload_status" -eq "0" ] && [ "$vcf_upload_status" -eq "0" ] # If both successfully uploaded
+    if [ $bam_string_count -eq 2 ] && [ $vcf_string_count -eq 2 ] # If both successfully uploaded
     then 
-        echo "BAM & VCF successfully uploaded"
+        echo "BAM & VCF successfuly uploaded"
         exit 0
         mark-success
     else
-        echo "Upload unsuccessful"
+        echo "Upload unsuccessfull"
         exit 1
     fi
-elif [[ ! -z $bam ]] &&  [[ -z $vcf ]] # If only a BAM was inputted 
+elif [[ -n $bam ]] &&  [[ -z $vcf ]] # If only a BAM was inputted 
 then 
     echo "BAM only given as input"
-    if [ "$bam_upload_status" -eq "0" ] 
+    if [ $bam_string_count -eq 2 ] 
     then
-        echo "BAM successfully uploaded"
+        echo "BAM successfuly uploaded"
         exit 0
         mark-success
     else
-        echo "BAM upload unsuccessful"
+        echo "BAM upload unsuccessfull"
         exit 1
     fi
-elif [[ -z $bam ]] &&  [[ ! -z $vcf ]]
+elif [[ -z $bam ]] &&  [[ -n $vcf ]]
 then 
     echo "VCF only given as input"
-    if [ "$vcf_upload_status" -eq "0" ]
+    if [ $vcf_string_count -eq 2 ]
     then
         echo "VCF uploaded successfully"
         exit 0
         mark-success
     else 
-        echo "VCF upload unsuccessful"
+        echo "VCF upload unsuccessfull"
         exit 1
     fi
 fi
-
 
 
 
