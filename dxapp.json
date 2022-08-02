@@ -1,7 +1,7 @@
 {
   "name": "wes_congenica_sftp_upload_v1.0",
   "title": "wes_congenica_sftp_upload_v1.0",
-  "summary": "v1.0  Upload WES VCF & BAMS to Congenica via SFTP",
+  "summary": "v0.1  Upload WES VCF & BAMS to Congenica via SFTP",
   "tags": [
     "Upload"
   ],
@@ -34,10 +34,6 @@
       {
         "name": "sshpass", 
         "version": "1.06-1"
-      },
-      {
-        "name": "expect", 
-        "version": "5.45.4-2build1"
       }
     ],
     "distribution" : "Ubuntu",
